@@ -9,7 +9,6 @@
     "trailing-comma": false,
     "indent": [true, "spaces", 2],
     "no-shadowed-variable": false,
-    "object-literal-sort-keys": true,
     "object-literal-sort-keys": false
   },
   "compilerOptions": {
