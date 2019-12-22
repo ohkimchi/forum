@@ -9,7 +9,8 @@
     "trailing-comma": false,
     "indent": [true, "spaces", 2],
     "no-shadowed-variable": false,
-    "object-literal-sort-keys": true
+    "object-literal-sort-keys": false,
+    "no-console": false
   },
   "compilerOptions": {
     "target": "esnext",
@@ -23,5 +24,8 @@
   "include": ["source"],
   "files.associations": {
     "tslint.json": "json"
+  },
+  "linterOptions": {
+    "exclude": ["src/serviceWorker.ts"]
   }
 }
