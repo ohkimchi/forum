@@ -30,16 +30,34 @@ const Login = () => {
     }
   }
 
-  function clickLogin() {}
-
-  function clickRegister() {
+  function checkAccountExisting() {
+    let existing = false
     accountsCollection.get().then((snapshot: any) => {
       snapshot.forEach((doc: any) => {
-        console.log(doc.data().username)
-        console.log(doc.data().password)
+        console.log(doc.data().username, doc.data().password)
+        if (
+          username === doc.data().username &&
+          password === doc.data().password
+        ) {
+          existing = true
+        }
       })
     })
-    console.log(username, password, captcha)
+    return existing
+  }
+
+  function clickLogin() {
+    if (checkAccountExisting()) {
+    }
+  }
+
+  function clickRegister() {
+    if (!checkAccountExisting() && captcha) {
+      accountsCollection.add({
+        username,
+        password
+      })
+    }
   }
 
   return (
