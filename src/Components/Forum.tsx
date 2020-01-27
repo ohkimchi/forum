@@ -1,6 +1,8 @@
 import Button from '@material-ui/core/Button'
-import TextArea from '@material-ui/core/TextField'
-import { Input } from 'antd'
+import {
+  default as TextArea,
+  default as TextField
+} from '@material-ui/core/TextField'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { AppContext } from '../App/AppReducer'
@@ -9,7 +11,7 @@ import { postsCollection } from '../utils/firebase'
 const InputDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
 `
 const PostDiv = styled.div`
   margin: 10px;
@@ -86,6 +88,7 @@ const Forum = () => {
         comments: []
       })
       await getAllPosts()
+      setNewTopic('')
     }
   }
 
@@ -125,9 +128,11 @@ const Forum = () => {
   return (
     <TopicListDiv>
       <InputDiv>
-        <Input
-          placeholder='New Topic'
+        <TextField
+          id='standard=basic'
+          label='New Topic'
           onChange={(e: any) => setNewTopic(e.target.value)}
+          value={newTopic}
         />
 
         <Button size='small' color='primary' onClick={() => createNewTopic()}>

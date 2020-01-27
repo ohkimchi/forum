@@ -1,5 +1,6 @@
 {
   "name": "rental-app",
+  "homepage": "http://ohkimchi.github.io/forum",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -29,7 +30,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "tslint --fix --project ./tsconfig.json"
+    "lint": "tslint --fix --project ./tsconfig.json",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^2.2.0"
   }
 }
