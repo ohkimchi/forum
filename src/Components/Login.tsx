@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import styled from 'styled-components'
 import { AppActionType, AppContext } from '../App/AppReducer'
@@ -21,7 +21,7 @@ const ChildDiv = styled.div`
 `
 
 const Login = () => {
-  const { state, dispatch } = useContext(AppContext)
+  const { dispatch } = useContext(AppContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [captcha, setCaptcha] = useState(false)

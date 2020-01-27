@@ -15,6 +15,5 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 const db = firebase.firestore()
-db.settings({ timestampsInSnapshots: true })
 export const accountsCollection = db.collection('accounts')
 export const postsCollection = db.collection('posts')

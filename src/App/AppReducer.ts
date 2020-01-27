@@ -1,4 +1,3 @@
-import { defaultCipherList } from 'constants'
 import { createContext, Dispatch } from 'react'
 import Forum from '../Components/Forum'
 import Login from '../Components/Login'
@@ -17,7 +16,7 @@ export interface IAppAction {
 
 export const initialState = {
   currentPage: 'Login',
-  username: ''
+  username: 'user3'
 }
 
 interface IContextProps {

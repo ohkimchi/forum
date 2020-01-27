@@ -1,6 +1,8 @@
+import TextArea from '@material-ui/core/TextField'
 import { Button, Input } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { AppContext } from '../App/AppReducer'
 import { postsCollection } from '../utils/firebase'
 
 const TopicListDiv = styled.div`
@@ -18,18 +20,20 @@ const TimeOptions = {
 }
 
 const Forum = () => {
+  const { state } = useContext(AppContext)
   const [tList, setTList] = useState({})
   const [newTopic, setNewTopic] = useState('')
   const [posts, setPosts] = useState(tList as any)
   const [comment, setComment] = useState({})
-  const { TextArea } = Input
+  const defaultComment = ''
 
-  useEffect(() => {
+  async function getAllPosts() {
     const temp = {} as any
-    postsCollection.get().then(async (snapshot: any) => {
+    await postsCollection.get().then(async (snapshot: any) => {
       await snapshot.forEach((doc: any) => {
         const data = doc.data()
-        temp[doc.id] = {
+        const docId = doc.id
+        temp[docId] = {
           topic: data.topic,
           topicAuthor: data.topicAuthor,
           topicTime: data.topicTime,
@@ -38,6 +42,10 @@ const Forum = () => {
         setTList(temp)
       })
     })
+  }
+
+  useEffect(() => {
+    getAllPosts()
   }, [])
 
   useEffect(() => {
@@ -45,13 +53,14 @@ const Forum = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tList])
 
-  function createNewTopic() {
+  async function createNewTopic() {
     postsCollection.add({
       topic: newTopic,
-      topicAuthor: 'username1',
+      topicAuthor: state.username,
       topicTime: Date.now(),
       comments: []
     })
+    await getAllPosts()
   }
 
   function submitComment(topicId: string) {
@@ -62,7 +71,7 @@ const Forum = () => {
         ...(posts[topicId] as any).comments,
         {
           comment: commentContent,
-          commentAuthor: 'username1',
+          commentAuthor: state.username,
           commentTime: Date.now()
         }
       ]
@@ -71,13 +80,13 @@ const Forum = () => {
       ...posts,
       [topicId]: updatedPosts
     })
-    console.log(comment)
     postsCollection.doc(topicId).update({
       ...updatedPosts
     })
   }
 
   function updateComment(topicId: string, commentContent: string) {
+    console.log(comment)
     setComment({
       ...comment,
       [topicId]: commentContent
@@ -86,7 +95,6 @@ const Forum = () => {
 
   return (
     <TopicListDiv>
-      {console.log(posts)}
       <Input
         placeholder='New Topic'
         onChange={(e: any) => setNewTopic(e.target.value)}
@@ -95,38 +103,43 @@ const Forum = () => {
       <div>
         {Object.keys(posts).map((key: any, i: any) => {
           const obj = posts[key]
+          console.log(obj.topic)
           return (
             <div key={`obj-${i}`} className='postObj'>
               <div>{obj.topic}</div>
               <div>{obj.topicAuthor}</div>
               <div>
-                {new Date(Number(obj.topicTime)).toLocaleDateString(
+                {new Date(obj.topicTime).toLocaleDateString(
                   undefined,
                   TimeOptions
                 )}
               </div>
-              <div>
+              <div key={`new-comment-${i}`}>
                 <TextArea
-                  placeholder='Your Comment'
-                  autoSize={{ minRows: 2, maxRows: 5 }}
-                  onChange={(e) => updateComment(key, e.target.value)}
+                  label='Your Comment'
+                  multiline
+                  rows='4'
+                  key={`new-comment-${key}`}
+                  onChange={(e: any) => updateComment(key, e.target.value)}
+                  defaultValue={defaultComment}
                 />
               </div>
-              {console.log(posts)}
               <Button onClick={() => submitComment(key)} />
-              <div>
-                {obj.comments.map((c: any, j: any) => (
-                  <div key={`obj-${i}-comment-${j}`}>
-                    <div>{c.comment}</div>
-                    <div>{c.commentAuthor}</div>
-                    <div>
-                      {new Date(Number(c.commentTime)).toLocaleDateString(
-                        undefined,
-                        TimeOptions
-                      )}
+              <div key={`obj-${i}-comment-block`}>
+                {obj.comments.map((c: any, j: any) => {
+                  return (
+                    <div key={`obj-${i}-comment-${j}`}>
+                      <div>{c.comment}</div>
+                      <div>{c.commentAuthor}</div>
+                      <div>
+                        {new Date(c.commentTime).toLocaleDateString(
+                          undefined,
+                          TimeOptions
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )
