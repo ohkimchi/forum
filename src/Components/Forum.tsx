@@ -10,30 +10,29 @@ const TopicListDiv = styled.div`
   width: 90vw;
 `
 const Forum = () => {
-  const [tList, setTList] = useState([])
+  const [tList, setTList] = useState({})
   const [newTopic, setNewTopic] = useState('')
-  const [posts, setPosts] = useState(tList)
-  const [comment, setComment] = useState('')
+  const [posts, setPosts] = useState(tList as any)
+  const [comment, setComment] = useState({})
   const { TextArea } = Input
 
   useEffect(() => {
-    const temp = [] as any
+    const temp = {} as any
     postsCollection.get().then(async (snapshot: any) => {
       await snapshot.forEach((doc: any) => {
         const data = doc.data()
-        temp.push({
+        temp[doc.id] = {
           topic: data.topic,
           topicAuthor: data.topicAuthor,
           topicTime: data.topicTime,
           comments: data.comments
-        })
+        }
         setTList(temp)
       })
     })
   }, [])
 
   useEffect(() => {
-    console.log('rerendered', tList)
     setPosts(tList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tList])
@@ -47,15 +46,47 @@ const Forum = () => {
     })
   }
 
+  function submitComment(topicId: string) {
+    const commentContent = (comment as any)[topicId]
+    const updatedPosts = {
+      ...posts[topicId],
+      comments: [
+        ...(posts[topicId] as any).comments,
+        {
+          comment: commentContent,
+          commentAuthor: 'username1',
+          commentTime: Date.now().toString()
+        }
+      ]
+    }
+    setPosts({
+      ...posts,
+      [topicId]: updatedPosts
+    })
+    console.log(comment)
+    postsCollection.doc(topicId).update({
+      ...updatedPosts
+    })
+  }
+
+  function updateComment(topicId: string, commentContent: string) {
+    setComment({
+      ...comment,
+      [topicId]: commentContent
+    })
+  }
+
   return (
     <TopicListDiv>
+      {console.log(posts)}
       <Input
         placeholder='New Topic'
         onChange={(e: any) => setNewTopic(e.target.value)}
       />
       <Button onClick={() => createNewTopic()}>Create</Button>
       <div>
-        {posts.map((obj: any, i: any) => {
+        {Object.keys(posts).map((key: any, i: any) => {
+          const obj = posts[key]
           return (
             <div key={`obj-${i}`} className='postObj'>
               <div>{obj.topic}</div>
@@ -65,8 +96,11 @@ const Forum = () => {
                 <TextArea
                   placeholder='Your Comment'
                   autoSize={{ minRows: 2, maxRows: 5 }}
+                  onChange={e => updateComment(key, e.target.value)}
                 />
               </div>
+              {console.log(posts)}
+              <Button onClick={() => submitComment(key)} />
               <div>
                 {obj.comments.map((c: any, j: any) => (
                   <div key={`obj-${i}-comment-${j}`}>
