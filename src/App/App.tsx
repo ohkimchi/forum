@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react'
+import Forum from '../Components/Forum'
 import './App.css'
 import { AppContext, AppReducer, initialState, PAGE_LOGIC } from './AppReducer'
-import Forum from '../Components/Forum'
 
 const App: React.FC = () => {
   const [state, dispatch] = useReducer(AppReducer, initialState)
