@@ -34,6 +34,7 @@ const TwoBlockDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-bottom: 10px;
 `
 const CommentBlockDiv = styled.div`
   margin: 15px;
@@ -50,9 +51,8 @@ const TimeOptions = {
 
 const Forum = () => {
   const { state } = useContext(AppContext)
-  const [tList, setTList] = useState({})
+  const [posts, setPosts] = useState({} as any)
   const [newTopic, setNewTopic] = useState('')
-  const [posts, setPosts] = useState(tList as any)
   const [comment, setComment] = useState({} as any)
   const defaultComment = ''
 
@@ -68,19 +68,14 @@ const Forum = () => {
           topicTime: data.topicTime,
           comments: data.comments
         }
-        setTList(temp)
       })
     })
+    setPosts(temp)
   }
 
   useEffect(() => {
     getAllPosts()
   }, [])
-
-  useEffect(() => {
-    setPosts(tList)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tList])
 
   async function createNewTopic() {
     if (newTopic !== '') {
@@ -143,10 +138,9 @@ const Forum = () => {
       <div>
         {Object.keys(posts).map((key: any, i: any) => {
           const obj = posts[key]
-          console.log(obj.topic)
           return (
-            <PostDiv>
-              <TwoBlockDiv>
+            <PostDiv key={`post-${i}`}>
+              <TwoBlockDiv key={`post-topic-block-${key}`}>
                 <div>{obj.topic}</div>
                 <div>
                   <AuthorDateDiv>{obj.topicAuthor}</AuthorDateDiv>
@@ -159,7 +153,7 @@ const Forum = () => {
                 </div>
               </TwoBlockDiv>
 
-              <TwoBlockDiv>
+              <TwoBlockDiv key={`post-comment-block-${key}`}>
                 <div key={`new-comment-${i}`}>
                   <TextArea
                     label='Your Comment'
@@ -182,10 +176,10 @@ const Forum = () => {
                 </div>
               </TwoBlockDiv>
 
-              <CommentBlockDiv key={`obj-${i}-comment-block`}>
+              <CommentBlockDiv key={`obj-${key}-comment-block`}>
                 {obj.comments.map((c: any, j: any) => {
                   return (
-                    <TwoBlockDiv key={`obj-${i}-comment-${j}`}>
+                    <TwoBlockDiv key={`obj-${key}-comment-${j}`}>
                       <div>{c.comment}</div>
                       <div>
                         <AuthorDateDiv>{c.commentAuthor}</AuthorDateDiv>

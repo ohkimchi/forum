@@ -1,6 +1,7 @@
 import React, { useReducer } from 'react'
 import './App.css'
 import { AppContext, AppReducer, initialState, PAGE_LOGIC } from './AppReducer'
+import Forum from '../Components/Forum'
 
 const App: React.FC = () => {
   const [state, dispatch] = useReducer(AppReducer, initialState)
@@ -9,7 +10,8 @@ const App: React.FC = () => {
   return (
     <AppContext.Provider value={{ state, dispatch }}>
       <div className='App'>
-        <Compo />
+        {/* <Compo /> */}
+        <Forum />
       </div>
     </AppContext.Provider>
   )

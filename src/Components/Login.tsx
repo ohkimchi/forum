@@ -14,7 +14,7 @@ const LoginDiv = styled.div`
   align-items: flex-end;
   text-align: center;
   margin: 5vh auto;
-  max-width: 90vw;
+  max-width: 95vw;
 `
 
 const FieldsDiv = styled.div`
@@ -26,6 +26,11 @@ const ChildDiv = styled.div`
   margin: 5px;
   text-align: center;
   align-items: center;
+`
+
+const ReminderDiv = styled.div`
+  text-align: center;
+  color: red;
 `
 
 const Login = () => {
@@ -49,7 +54,6 @@ const Login = () => {
     let existing = false
     await accountsCollection.get().then((snapshot: any) => {
       snapshot.forEach((doc: any) => {
-        console.log(doc.data().username, doc.data().password)
         if (
           username === doc.data().username &&
           password === doc.data().password
@@ -85,7 +89,6 @@ const Login = () => {
   }
 
   async function clickRegister() {
-    console.log('register', username, password, captcha)
     if (username !== '' && password !== '') {
       setFillInfoReminder(false)
       if (!captcha) {
@@ -93,12 +96,10 @@ const Login = () => {
       } else {
         const existing = await checkAccountExisting()
         if (!existing && captcha) {
-          console.log('adding')
           accountsCollection.add({
             username,
             password
           })
-          console.log('after register')
           setCheckUserExistInDB(true)
           setLoginAgain(true)
         }
@@ -146,19 +147,23 @@ const Login = () => {
           Register
         </Button>
       </ChildDiv>
-      <div>{fillInfoReminder && <div>Please fill in all the fields.</div>}</div>
-      <div>
-        {checkCaptcha && <div>Please let us know you are not a robot.</div>}
-      </div>
-      <div>
-        {!checkUserExistInDB && (
-          <div>
-            You might enter your username or password wrong, or do not have an
-            account with us. Please register.
-          </div>
-        )}
-      </div>
-      <div>{loginAgain && <div>You may login again now.</div>}</div>
+      <ReminderDiv>
+        <div>
+          {fillInfoReminder && <div>Please fill in all the fields.</div>}
+        </div>
+        <div>
+          {checkCaptcha && <div>Please let us know you are not a robot.</div>}
+        </div>
+        <div>
+          {!checkUserExistInDB && (
+            <div>
+              You might enter your username or password wrong, or do not have an
+              account with us. Please register.
+            </div>
+          )}
+        </div>
+        <div>{loginAgain && <div>You may login again now.</div>}</div>
+      </ReminderDiv>
     </div>
   )
 }
