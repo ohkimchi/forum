@@ -10,14 +10,22 @@ const sitekeyConst = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 
 const LoginDiv = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-end;
   text-align: center;
-  margin: auto;
-  width: 70vw;
+  margin: 5vh auto;
+  max-width: 90vw;
 `
+
+const FieldsDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 const ChildDiv = styled.div`
   margin: 5px;
   text-align: center;
+  align-items: center;
 `
 
 const Login = () => {
@@ -101,27 +109,32 @@ const Login = () => {
   }
 
   return (
-    <LoginDiv>
-      <ChildDiv>
-        <TextField
-          id='standard-basic'
-          label='Username'
-          onChange={(e: any) => setUsername(e.target.value)}
-        />
-      </ChildDiv>
-      <ChildDiv>
-        <TextField
-          id='standard-basic'
-          label='Password'
-          onChange={(e: any) => setPassword(e.target.value)}
-        />
-      </ChildDiv>
-      <ChildDiv>
-        <ReCaptcha
-          sitekey={sitekeyConst}
-          onChange={(val: any) => handleReCaptchaChange(val)}
-        />
-      </ChildDiv>
+    <div>
+      <LoginDiv>
+        <FieldsDiv>
+          <ChildDiv>
+            <TextField
+              id='standard-basic'
+              label='Username'
+              onChange={(e: any) => setUsername(e.target.value)}
+            />
+          </ChildDiv>
+          <ChildDiv>
+            <TextField
+              id='standard-basic'
+              label='Password'
+              onChange={(e: any) => setPassword(e.target.value)}
+            />
+          </ChildDiv>
+        </FieldsDiv>
+
+        <ChildDiv>
+          <ReCaptcha
+            sitekey={sitekeyConst}
+            onChange={(val: any) => handleReCaptchaChange(val)}
+          />
+        </ChildDiv>
+      </LoginDiv>
 
       <ChildDiv>
         <Button variant='contained' onClick={() => clickLogin()}>
@@ -146,7 +159,7 @@ const Login = () => {
         )}
       </div>
       <div>{loginAgain && <div>You may login again now.</div>}</div>
-    </LoginDiv>
+    </div>
   )
 }
 
