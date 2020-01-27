@@ -1,0 +1,8 @@
+.MuiFormControl-root {
+  width: 65vw;
+}
+
+.ant-input {
+  width: 70vw;
+  height: 25px;
+}
