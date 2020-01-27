@@ -9,6 +9,14 @@ const TopicListDiv = styled.div`
   margin: 10px auto auto auto;
   width: 90vw;
 `
+
+const TimeOptions = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}
+
 const Forum = () => {
   const [tList, setTList] = useState({})
   const [newTopic, setNewTopic] = useState('')
@@ -55,7 +63,7 @@ const Forum = () => {
         {
           comment: commentContent,
           commentAuthor: 'username1',
-          commentTime: Date.now().toString()
+          commentTime: Date.now()
         }
       ]
     }
@@ -91,12 +99,17 @@ const Forum = () => {
             <div key={`obj-${i}`} className='postObj'>
               <div>{obj.topic}</div>
               <div>{obj.topicAuthor}</div>
-              <div>{obj.topicTime.seconds}</div>
+              <div>
+                {new Date(Number(obj.topicTime)).toLocaleDateString(
+                  undefined,
+                  TimeOptions
+                )}
+              </div>
               <div>
                 <TextArea
                   placeholder='Your Comment'
                   autoSize={{ minRows: 2, maxRows: 5 }}
-                  onChange={e => updateComment(key, e.target.value)}
+                  onChange={(e) => updateComment(key, e.target.value)}
                 />
               </div>
               {console.log(posts)}
@@ -106,7 +119,12 @@ const Forum = () => {
                   <div key={`obj-${i}-comment-${j}`}>
                     <div>{c.comment}</div>
                     <div>{c.commentAuthor}</div>
-                    <div>{c.commentTime.seconds}</div>
+                    <div>
+                      {new Date(Number(c.commentTime)).toLocaleDateString(
+                        undefined,
+                        TimeOptions
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

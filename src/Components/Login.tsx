@@ -1,8 +1,9 @@
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import ReCaptcha from 'react-google-recaptcha'
 import styled from 'styled-components'
+import { AppActionType, AppContext } from '../App/AppReducer'
 import { accountsCollection } from '../utils/firebase'
 
 const sitekeyConst = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
@@ -20,6 +21,7 @@ const ChildDiv = styled.div`
 `
 
 const Login = () => {
+  const { state, dispatch } = useContext(AppContext)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [captcha, setCaptcha] = useState(false)
@@ -30,9 +32,9 @@ const Login = () => {
     }
   }
 
-  function checkAccountExisting() {
+  async function checkAccountExisting() {
     let existing = false
-    accountsCollection.get().then((snapshot: any) => {
+    await accountsCollection.get().then((snapshot: any) => {
       snapshot.forEach((doc: any) => {
         console.log(doc.data().username, doc.data().password)
         if (
@@ -43,11 +45,22 @@ const Login = () => {
         }
       })
     })
+    console.log(existing, 'existing')
     return existing
   }
 
-  function clickLogin() {
-    if (checkAccountExisting()) {
+  async function clickLogin() {
+    const existing = await checkAccountExisting()
+    if (existing) {
+      dispatch({
+        username,
+        currentPage: 'Forum',
+        type: AppActionType.SET_LOGIN
+      })
+    } else {
+      setUsername('')
+      setPassword('')
+      setCaptcha(false)
     }
   }
 
